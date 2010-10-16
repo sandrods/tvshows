@@ -8,6 +8,7 @@ require 'tvshows/episode'
 require 'tvshows/series'
 require 'tvshows/logger'
 require 'tvshows/downloader'
+require 'tvshows/subtitles'
 
 
 EventMachine.run do
@@ -22,13 +23,17 @@ EventMachine.run do
     unless eps.empty?
       d = Downloader.new(eps)
 
-      job_id = scheduler.every "10m", :first_in => "0m" do
+      scheduler.every "10m", :first_in => "0m" do
         d.run
         scheduler.stop if d.done?
       end
 
     end
 
+  end
+
+  scheduler.every "2h", :first_in => "0m" do
+    Subtitles.new(YAML.load_file("../subs.config.yml"))
   end
 
 end

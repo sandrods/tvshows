@@ -1,0 +1,50 @@
+:login:
+  :username: sandrods
+  :password: 328791
+
+:base_path: /Users/sandro/TV Shows
+
+:shows:
+  - folder: Fringe.S03
+    link_regex: ^Fringe
+    subtitle_regex: (?!.*(720|264))Fringe.*\.srt
+
+  - folder: Greys.Anatomy.S07
+    link_regex: ^Greys
+    subtitle_regex: (?!.*(720|264))Greys.Anatomy.*\.srt
+
+  - folder: 30.Rock.S05
+    link_regex: ^30.Rock
+    subtitle_regex: (?!.*(720|264))30.Rock.*\.srt
+
+  - folder: House.S07
+    link_regex: ^House
+    subtitle_regex: (?!.*(720|264))House.*\.srt
+
+  - folder: Criminal.Minds.S06
+    link_regex: ^Criminal.Minds
+    subtitle_regex: (?!.*(720|264))Criminal.Minds.*\.srt
+
+  - folder: Lie.to.Me.S03
+    link_regex: ^Lie.to.Me
+    subtitle_regex: (?!.*(720|264))Lie.to.Me.*\.srt
+
+  - folder: Dexter.S05
+    link_regex: ^Dexter
+    subtitle_regex: (?!.*(720|264))Dexter.*\.srt
+
+  - folder: Modern.Family.S02
+    link_regex: ^Modern.Family
+    subtitle_regex: (?!.*(720|264))Modern.Family.*\.srt
+
+  - folder: Rubicon.S01
+    link_regex: ^Rubicon
+    subtitle_regex: (?!.*(720|264))Rubicon.*\.srt
+
+  - folder: The.Event.S01
+    link_regex: ^The.Event
+    subtitle_regex: (?!.*(720|264))The.Event.*\.srt
+
+  - folder: Boardwalk.Empire.S01
+    link_regex: ^Boardwalk.Empire
+    subtitle_regex: (?!.*(720|264))Boardwalk.Empire.*\.srt
