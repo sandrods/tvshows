@@ -1,8 +1,17 @@
-:login:
-  :username: sandrods
-  :password: ******
-
 :base_path: /Users/sandro/TV Shows
+
+:login:
+  :legendas:
+    :username: sandrods
+    :password: 328791
+
+  :digitalhive:
+    :username: sandrods
+    :password: 328791
+
+  :calendar:
+    :username: sandrods@gmail.com
+    :password: 328791
 
 :shows:
   - folder: Fringe.S03
@@ -48,3 +57,27 @@
   - folder: Boardwalk.Empire.S01
     link_regex: ^Boardwalk.Empire
     subtitle_regex: (?!.*(720|264))Boardwalk.Empire.*\.srt
+
+  - folder: Friday.Night.Lights.S05
+    link_regex: ^Friday.Night.Lights
+    subtitle_regex: (?!.*(720|264))Friday.Night.Lights.*\.srt
+
+  - folder: In.Treatment.S03
+    link_regex: ^In.Treatment
+    subtitle_regex: (?!.*(720|264))In.Treatment.*\.srt
+
+  - folder: The.Walking.Dead.S01
+    link_regex: ^The.Walking.Dead
+    subtitle_regex: (?!.*(720|264))The.Walking.Dead.*\.srt
+
+  - folder: The.Closer.S06
+    link_regex: ^The.Closer
+    subtitle_regex: (?!.*(720|264))The.Closer.*\.srt
+
+  - folder: Southland.S03
+    link_regex: ^Southland
+    subtitle_regex: (?!.*(720|264))Southland.*\.srt
+
+  - folder: Flashpoint.S03
+    link_regex: ^Flashpoint
+    subtitle_regex: (?!.*(720|264))Flashpoint.*\.srt

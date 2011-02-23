@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>local.tvshows</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>/usr/bin/ruby</string>
+		<string>/Users/sandro/dev/workspace/tvshows/lib/tvshows.rb</string>
+	</array>
+	<key>WorkingDirectory</key>
+	<string>/Users/sandro/dev/workspace/tvshows/lib</string>
+	<key>StandardOutPath</key>
+	<string>/var/log/tvshows.log</string>
+	<key>StandardErrorPath</key>
+	<string>/var/log/tvshows.err.log</string>
+	<key>RunAtLoad</key>
+	<true/>
+</dict>
+</plist>

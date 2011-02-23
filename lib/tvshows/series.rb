@@ -1,20 +1,21 @@
 
 class Series
 
-  def initialize
+  def initialize(config)
+    @config = config
     @agent = WWW::Mechanize.new
     login
   end
 
   def login
 
-    Logger.log "Trying to login...", 'Calendar'
+    Logger.log "Trying to login...", 'CALENDAR'
 
     page = @agent.get('http://www.pogdesign.co.uk/cat/')
 
     f = page.form_with(:action => '/cat/') do |form|
-      form.username = "sandrods@gmail.com"
-      form.password = "328791"
+      form.username = @config[:login][:calendar][:username]
+      form.password = @config[:login][:calendar][:password]
     end
     button = f.button(:value=>"Account Login")
 
@@ -27,7 +28,7 @@ class Series
   def episodes(_date = nil)
 
     eps = []
-    date = _date ? Date.parse(_date) : Date.today - 8
+    date = _date ? Date.parse(_date) : Date.today
     url_month = date.month.to_s + "-" + date.year.to_s
     td_id = "d_#{date.day}_#{date.month}_#{date.year}"
 
@@ -44,11 +45,10 @@ class Series
       eps << ep
     end
     if eps.empty?
-      Logger.log "NOTHING", 'Airs Today', true
+      Logger.log "NOTHING", 'CALENDAR - Today', true
     else
       eps.each do |e| 
-        Logger.log e.to_s, 'Airs Today', true
-#        Logger.log e.ai, 'Airs Today', true
+        Logger.log e.to_s, 'CALENDAR - Today', true
       end
     end
     
