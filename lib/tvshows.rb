@@ -6,7 +6,7 @@ require 'eventmachine'
 require 'eventmachine-tail'
 #require 'em-dir-watcher'
 
-%w(logger episode series downloader subtitles extractor).each do |file|
+%w(logger episode series downloader subtitles extractor scrappers/digihive).each do |file|
   require File.expand_path("../tvshows/#{file}", __FILE__)
 end
 
@@ -46,15 +46,6 @@ class TvShowsDaemon < Sinatra::Base
 
       EventMachine.run do
 
-        # Logger.log "Watching files on #{config[:base_path]}", "TV SHOWS"
-        # EMDirWatcher.watch config[:base_path], :include_only => '*.rar' do |paths|
-        #   paths.each do |path|
-        #     file = File.join(config[:base_path], path)
-        #     Extractor.new(config).extract(file) if File.exists? file
-        #   end
-        # end
-        #
-  
         Watcher.new("#{config[:base_path]}/**/*.rar", config)
 
         scheduler = Rufus::Scheduler.start_new

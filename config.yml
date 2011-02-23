@@ -1,5 +1,7 @@
 :base_path: /Users/sandro/TV Shows
 
+:torrent_save_path: /Users/sandro/Downloads/torrents/
+
 :login:
   :legendas:
     :username: sandrods
