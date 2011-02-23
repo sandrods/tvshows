@@ -22,7 +22,7 @@ class Episode
   end
 
   def to_s
-    "#{self.series}\n#{self.ep_txt} - #{self.title}"
+    "#{self.series}: #{self.ep_txt} - #{self.title}"
   end
 
 end
