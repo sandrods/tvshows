@@ -6,14 +6,12 @@ require 'eventmachine'
 require 'eventmachine-tail'
 #require 'em-dir-watcher'
 
-require 'tvshows/logger'
-require 'tvshows/episode'
-require 'tvshows/series'
-require 'tvshows/downloader'
-require 'tvshows/subtitles'
-require 'tvshows/extractor'
+%w(logger episode series downloader subtitles extractor).each do |file|
+  require File.expand_path("../tvshows/#{file}", __FILE__)
+end
 
-config = YAML.load_file("../config.yml")
+require 'sinatra/base'
+
 
 class Watcher < EventMachine::FileGlobWatch
   def initialize(pathglob, config, interval=60)
@@ -31,41 +29,75 @@ class Watcher < EventMachine::FileGlobWatch
 
 end # class Watcher
 
-EventMachine.run do
+class TvShowsDaemon < Sinatra::Base
 
-  # Logger.log "Watching files on #{config[:base_path]}", "TV SHOWS"
-  # EMDirWatcher.watch config[:base_path], :include_only => '*.rar' do |paths|
-  #   paths.each do |path|
-  #     file = File.join(config[:base_path], path)
-  #     Extractor.new(config).extract(file) if File.exists? file
-  #   end
-  # end
-  # 
-  Watcher.new("#{config[:base_path]}/**/*.rar", config)
+  configure do
+    
+    enable :logging
+    
+    set :show_exceptions, true
 
-  scheduler = Rufus::Scheduler.start_new
-  
-  scheduler.cron "31 22 * * *" do
-  
-    eps = Series.new(config).episodes
-      
-    unless eps.empty?
-      download = Downloader.new(config, eps)
-      
-      scheduler.every("10m", :first_in => "30m") do |job|
-        download.run
-        if download.done?
-          job.unschedule
-          Logger.log "Exiting...", "DIGITAL HIVE"
-        end
+    Thread.new do
+      until EventMachine.reactor_running?
+        sleep 1
       end
       
+      config = YAML.load_file(File.expand_path("../../config.yml", __FILE__))
+
+      EventMachine.run do
+
+        # Logger.log "Watching files on #{config[:base_path]}", "TV SHOWS"
+        # EMDirWatcher.watch config[:base_path], :include_only => '*.rar' do |paths|
+        #   paths.each do |path|
+        #     file = File.join(config[:base_path], path)
+        #     Extractor.new(config).extract(file) if File.exists? file
+        #   end
+        # end
+        #
+  
+        Watcher.new("#{config[:base_path]}/**/*.rar", config)
+
+        scheduler = Rufus::Scheduler.start_new
+
+        scheduler.cron "56 23 * * *" do
+
+          Logger.log "scheduler.cron", "DEBUG"
+          eps = Series.new(config).episodes
+
+          unless eps.empty?
+            download = Downloader.new(config, eps)
+
+            scheduler.every("10m", :first_in => "30m") do |job|
+              download.run
+              if download.done?
+                job.unschedule
+                Logger.log "Exiting...", "DIGITAL HIVE"
+              end
+            end
+
+          end
+
+        end
+
+        scheduler.every "1h", :first_in => "0m" do
+          Subtitles.new(config)
+        end
+
+      end
+
     end
-  
   end
-  
-  scheduler.every "1h", :first_in => "0m" do
-    Subtitles.new(config)
+
+  # This can display a nice status message.
+  #
+  get "/" do
+    "#{Time.now} - Your skinny daemon is up and running."
   end
+
+  # This POST allows your other apps to control the service.
+  #
+  post "/do-something/:great" do
+    # something great could happen here
+  end  
 
 end

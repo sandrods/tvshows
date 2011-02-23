@@ -52,13 +52,15 @@ class Subtitles
 
   def download
     links = get_links
+    
     @config[:shows].each do |leg|
       rex = Regexp.new(leg['link_regex'], Regexp::IGNORECASE)
       if names = links.keys.select{|l| l.match(rex)}
         names.each do |name|
           if was_not_downloaded?(name)
             id = links[name]
-            file = @agent.get("#{URL}/info.php?d=#{id}&c=1")
+            url = "#{URL}/info.php?d=#{id}&c=1"
+            file = @agent.get(url)
             file.save
             log_download!(name)
             extract_file(file.filename, leg)
@@ -91,7 +93,7 @@ class Subtitles
 
   def log_download!(name)
     time = Time.now.strftime("%d/%m/%Y %H:%M:%S")
-    File.open("downloaded.log", 'a') do |f|
+    File.open(File.expand_path("../../downloaded.log", __FILE__), 'a') do |f|
       f.write("#{time} - #{name}\n")
     end
   end
@@ -100,7 +102,7 @@ class Subtitles
     #return true unless File.exist?("downloaded.log")
     lines = []
     
-    File.open("downloaded.log", 'r') { |f| lines = f.readlines }
+    File.open(File.expand_path("../../downloaded.log", __FILE__), 'r') { |f| lines = f.readlines }
     
     lines.detect {|line| line.include?(name) }.nil?
   end
