@@ -6,7 +6,7 @@ require 'eventmachine'
 require 'eventmachine-tail'
 #require 'em-dir-watcher'
 
-%w(logger episode series downloader subtitles extractor scrappers/digihive).each do |file|
+%w(logger episode series downloader subtitles extractor scrappers/dighive).each do |file|
   require File.expand_path("../tvshows/#{file}", __FILE__)
 end
 
@@ -58,7 +58,7 @@ class TvShowsDaemon < Sinatra::Base
           unless eps.empty?
             download = Downloader.new(config, eps)
 
-            scheduler.every("10m", :first_in => "30m") do |job|
+            scheduler.every("10m", :first_in => "0m") do |job|
               download.run
               if download.done?
                 job.unschedule
