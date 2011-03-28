@@ -28,7 +28,7 @@ class Subtitles
     button = f.button(:value=>"Entrar")
 
     f.submit(button)
-   
+
   end
 
   def get_links
@@ -75,13 +75,16 @@ class Subtitles
     Dir.chdir(folder)
 
     unzip_file(file_name)
-    
+
     files = Dir["*.srt"]
 
     rex = Regexp.new(leg['subtitle_regex'], Regexp::IGNORECASE)
     if st = files.detect { |f| f =~ rex }
-      FileUtils.cp st, File.expand_path(leg['folder'], @config[:base_path])
+      copy_to = File.expand_path(leg['folder'], @config[:base_path])
+      FileUtils.cp st, copy_to
       Logger.log "#{st} extracted", "SUBTITLE FOUND", true
+
+      rename_video_file(st, copy_to)
     else
       Logger.log "#{file_name} downloaded, but no subtitle matched: #{files.join("\n")}", "SUBTITLES", true
     end
@@ -99,9 +102,9 @@ class Subtitles
   def was_not_downloaded?(name)
     #return true unless File.exist?("downloaded.log")
     lines = []
-    
+
     File.open("downloaded.log", 'r') { |f| lines = f.readlines }
-    
+
     lines.detect {|line| line.include?(name) }.nil?
   end
 
@@ -114,4 +117,22 @@ class Subtitles
       %x(unzip #{file_name})
     end
   end
+
+  def rename_video_file(st, dir)
+
+    if st =~ /S(\d\d)E(\d\d)/i
+      s, e = $1.to_i, $2.to_i
+      rex = Regexp.new("#{s}#{e}")
+      files = Dir["#{dir}/*.avi"]
+      if avi = files.detect { |f| f =~ rex }
+        new_name = File.join(dir, st.gsub(".srt", ".avi"))
+        FileUtils.mv(avi, new_name)
+        Logger.log "#{avi} renamed to #{new_name}", "SUBTITLE FOUND", true
+      end
+
+    end
+
+  end
+
+
 end
