@@ -11,4 +11,9 @@ class Show
   #
   has n, :episodes
 
+  def link_regex
+    name = self.name.split.join(".")
+    Regexp.new("^#{name}", Regexp::IGNORECASE)
+  end
+
 end

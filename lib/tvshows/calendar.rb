@@ -39,9 +39,11 @@ class Calendar
     page./("td##{td_id} a.eplink").each do |node|
       ep = Episode.new
       td = node.parent
-      ep.show_name = td./("a").text
-      ep.title = td./("span.seasep")[0].text
+
+      ep.set_show(td./("a").text)
       ep.set_ep(td./("span.seasep")[1].text)
+      ep.title = td./("span.seasep")[0].text
+
       ep.save
     end
   end

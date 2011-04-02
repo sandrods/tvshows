@@ -32,8 +32,13 @@ class Episode
     self.number = $2
   end
 
+  def set_show(show_name)
+    show = Show.first_or_create(:name => show_name)
+    self.show = show
+  end
+
   def regex
-    name = self.show_name.split.join(".")
+    name = self.show.name.split.join(".")
     Regexp.new("(?!.*(720|264))(=#{name}.*#{self.number_txt}.*HDTV)", Regexp::IGNORECASE)
   end
 
@@ -45,7 +50,7 @@ class Episode
   end
 
   def to_s
-    "#{self.show_name}: #{self.number_txt} - #{self.title}"
+    "#{self.show.name}: #{self.number_txt} - #{self.title}"
   end
   
   def done!
