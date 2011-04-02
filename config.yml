@@ -31,7 +31,7 @@
     subtitle_regex: (?!.*(720|264))House.*\.srt
 
   - folder: Criminal.Minds.S06
-    link_regex: ^Criminal.Minds
+    link_regex: ^Criminal.Minds.(?!Suspect)
     subtitle_regex: (?!.*(720|264))Criminal.Minds.*\.srt
 
   - folder: Lie.to.Me.S03
@@ -81,3 +81,11 @@
   - folder: Flashpoint.S03
     link_regex: ^Flashpoint
     subtitle_regex: (?!.*(720|264))Flashpoint.*\.srt
+
+  - folder: United.States.of.Tara.S03
+    link_regex: ^United.States.of.Tara
+    subtitle_regex: (?!.*(720|264))United.States.of.Tara.*\.srt
+
+  - folder: Nurse.Jackie.S03
+    link_regex: ^Nurse.Jackie
+    subtitle_regex: (?!.*(720|264))Nurse.Jackie.*\.srt
