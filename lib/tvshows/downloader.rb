@@ -12,7 +12,7 @@ class Downloader
 
     @scrapper.update_links!
 
-    Episode.to_do.each do |ep|
+    Episode.torrent_to_do.each do |ep|
       Logger.log "(#{@counter}) Verifying -> #{ep.to_s}", 'SCRAPPER'
 
       if @scrapper.find_episode?(ep)
@@ -20,7 +20,7 @@ class Downloader
         @scrapper.save_torrent(PATH)
         Logger.log "Saving #{@scrapper.filename}", 'DOWNLOAD TORRENT'
         
-        ep.done!
+        ep.torrent_done!
       end
 
     end
