@@ -46,7 +46,9 @@ EventMachine.run do
   scheduler = Rufus::Scheduler.start_new
   
   scheduler.cron "31 22 * * *" do
-  
+
+    config = YAML.load_file("../config.yml")
+
     eps = Series.new(config).episodes
       
     unless eps.empty?
@@ -65,6 +67,7 @@ EventMachine.run do
   end
   
   scheduler.every "1h", :first_in => "0m" do
+    config = YAML.load_file("../config.yml")
     Subtitles.new(config)
   end
 
