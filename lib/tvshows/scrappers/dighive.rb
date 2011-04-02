@@ -4,6 +4,7 @@ module Scrapper
     attr_accessor :filename
 
     def initialize(config)
+      @episodes = []
       @agent = WWW::Mechanize.new
       @config = config
       login

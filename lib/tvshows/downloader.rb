@@ -1,7 +1,6 @@
 class Downloader
 
-  def initialize(_config, _files)
-    @files = _files
+  def initialize(_config)
     @counter = 0
 
     @scrapper = Scrapper::DigitalHive.new(_config)
@@ -13,8 +12,7 @@ class Downloader
 
     @scrapper.update_links!
 
-    @files.each do |ep|
-      next if ep.done
+    Episode.to_do.each do |ep|
       Logger.log "(#{@counter}) Verifying -> #{ep.to_s}", 'SCRAPPER'
 
       if @scrapper.find_episode?(ep)
@@ -22,7 +20,7 @@ class Downloader
         @scrapper.save_torrent(PATH)
         Logger.log "Saving #{@scrapper.filename}", 'DOWNLOAD TORRENT'
         
-        ep.done = true
+        ep.done!
       end
 
     end
@@ -30,9 +28,5 @@ class Downloader
   rescue Exception => e
     Logger.log e.message, "SCRAPPER ERR"
   end
-  
-  def done?
-    !@files.detect{ |ep| ep.done == false}
-  end
-  
+
 end
