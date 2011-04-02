@@ -1,5 +1,5 @@
 
-class Series
+class Calendar
 
   def initialize(config)
     @config = config
@@ -25,7 +25,7 @@ class Series
 
   end
   
-  def episodes(_date = nil)
+  def get_episodes!(_date = nil)
 
     eps = []
     date = _date ? Date.parse(_date) : Date.today
@@ -39,20 +39,11 @@ class Series
     page./("td##{td_id} a.eplink").each do |node|
       ep = Episode.new
       td = node.parent
-      ep.series = td./("a").text
+      ep.show_name = td./("a").text
       ep.title = td./("span.seasep")[0].text
       ep.set_ep(td./("span.seasep")[1].text)
-      eps << ep
+      ep.save
     end
-    if eps.empty?
-      Logger.log "NOTHING", 'CALENDAR - Today', true
-    else
-      eps.each do |e| 
-        Logger.log e.to_s, 'CALENDAR - Today', true
-      end
-    end
-    
-    eps
   end
   
 end
