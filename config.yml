@@ -89,3 +89,7 @@
   - folder: Nurse.Jackie.S03
     link_regex: ^Nurse.Jackie
     subtitle_regex: (?!.*(720|264))Nurse.Jackie.*\.srt
+
+  - folder: The.Killing.S01
+    link_regex: ^The.Killing
+    subtitle_regex: (?!.*(720|264))The.Killing.*\.srt
