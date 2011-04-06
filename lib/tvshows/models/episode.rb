@@ -1,8 +1,6 @@
 class Episode
   include DataMapper::Resource
 
-  # Properties
-  #
   property :id,         Serial
 
   property :show_name,  String,  :length  => (1..254)
@@ -13,8 +11,6 @@ class Episode
   property :torrent_done,   Boolean, :default => false
   property :subtitle_done,  Boolean, :default => false
 
-  # Associations
-  #
   belongs_to :show
 
   def self.torrent_to_do

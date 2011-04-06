@@ -1,5 +1,5 @@
- - configurar database sqlite
- - configurar migrations
+ + configurar database sqlite
+ + configurar migrations
  - subtitles
  - Extratctor
  - Migração de shows do yml para BD

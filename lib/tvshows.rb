@@ -1,14 +1,27 @@
 require 'rubygems'
 require 'mechanize'
-require 'growl'
+require 'data_mapper'
+require 'dm-migrations'
 
-%w(logger episode calendar downloader subtitles extractor scrappers/dighive scheduler).each do |file|
+%w(logger calendar downloader subtitles extractor scrappers/dighive scheduler models/episode models/show).each do |file|
   require File.expand_path("../tvshows/#{file}", __FILE__)
 end
 
 require 'sinatra/base'
 
 class TvShowsDaemon < Sinatra::Base
+
+
+  configure do
+
+    db = "sqlite3:///#{Dir.pwd}/tvshows.sqlite3"
+    DataMapper.setup(:default, db)
+
+    Episode.auto_migrate! unless Episode.storage_exists?
+    Show.auto_migrate! unless Show.storage_exists?
+    
+    DataMapper.auto_upgrade!
+  end
 
   configure do
     
@@ -19,16 +32,16 @@ class TvShowsDaemon < Sinatra::Base
     Scheduler.start!
   end
 
-  # This can display a nice status message.
-  #
-  get "/" do
-    "#{Time.now} - Your skinny daemon is up and running."
-  end
+  set :views, File.dirname(__FILE__) + '/tvshows/views'
+  set :public, File.dirname(__FILE__) + '/tvshows/public'
 
-  # This POST allows your other apps to control the service.
-  #
-  post "/do-something/:great" do
-    # something great could happen here
-  end  
+  get "/shows" do
+    Show.all.map {|s| s.name }.join("<br/>")
+  end
+ 
+ get "/show/:name" do |name|
+   Show.create(:name=>name)
+   redirect '/shows'
+ end
 
 end
