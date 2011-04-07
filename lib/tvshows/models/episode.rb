@@ -3,7 +3,6 @@ class Episode
 
   property :id,         Serial
 
-  property :show_name,  String,  :length  => (1..254)
   property :title,      String,  :length  => (1..254)
   property :season,     String,  :length  => (1..2)
   property :number,     String,  :length  => (1..6)
@@ -51,9 +50,16 @@ class Episode
     self.show = show
   end
 
-  def regex
-    name = self.show.name.split.join(".")
-    Regexp.new("(?!.*(720|264))(=#{name}.*#{self.number_txt}.*HDTV)", Regexp::IGNORECASE)
+  def torrent_regex
+    Regexp.new("(?!.*(720|264))(=#{self.show_name}.*#{self.number_txt}.*HDTV)", Regexp::IGNORECASE)
+  end
+
+  def subtitle_link_regex
+    Regexp.new("^#{self.show_name}.*#{self.number_txt}", Regexp::IGNORECASE)
+  end
+
+  def subtitle_file_regex
+    Regexp.new("(?!.*(720|264))#{self.show_name}.*\.srt", Regexp::IGNORECASE)
   end
 
   def number_txt
@@ -61,6 +67,10 @@ class Episode
     _season = self.season.to_s.rjust(2, '0')
 
     "S#{_season}E#{_ep}"
+  end
+
+  def show_name
+    self.show.name.split.join(".")
   end
 
   def to_s

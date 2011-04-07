@@ -23,11 +23,11 @@ class Scheduler
 
           Logger.log "scheduler.cron", "DEBUG"
 
-          Calendar.new(config).get_episodes!
+          Torrent::Calendar.new(config).get_episodes!
 
           if Episode.has_torrent_to_do?
 
-            downloader = Downloader.new(config)
+            downloader = Torrent::Downloader.new(config)
 
             scheduler.every("10m", :first_in => "0m") do |job|
               downloader.run
@@ -42,7 +42,7 @@ class Scheduler
         end
 
         scheduler.every "1h", :first_in => "0m" do
-          Subtitles.new(config) if Episode.has_subtitle_to_do?
+          Subtitle::Downloader.new(config) if Episode.has_subtitle_to_do?
         end
 
       end # EventMachine
