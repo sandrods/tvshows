@@ -126,8 +126,10 @@ class Subtitles
       files = Dir["#{dir}/*.avi"]
       if avi = files.detect { |f| f =~ rex }
         new_name = File.join(dir, st.gsub(".srt", ".avi"))
-        FileUtils.mv(avi, new_name)
-        Logger.log "#{File.basename(avi)} renamed to #{File.basename(new_name)}", "SUBTITLE FOUND", true
+        if new_name != avi
+          FileUtils.mv(avi, new_name)
+          Logger.log "#{File.basename(avi)} renamed to #{File.basename(new_name)}", "SUBTITLE FOUND", true
+        end
       end
 
     end
