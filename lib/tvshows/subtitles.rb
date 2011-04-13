@@ -121,8 +121,8 @@ class Subtitles
   def rename_video_file(st, dir)
 
     if st =~ /S(\d\d)E(\d\d)/i
-      s, e = $1.to_i, $2.to_i
-      rex = Regexp.new("#{s}#{e}")
+      s, ss, e = $1.to_i, $1, $2
+      rex = Regexp.new("#{s}#{e}|S#{ss}E#{e}", Regexp::IGNORECASE)
       files = Dir["#{dir}/*.avi"]
       if avi = files.detect { |f| f =~ rex }
         new_name = File.join(dir, st.gsub(".srt", ".avi"))
