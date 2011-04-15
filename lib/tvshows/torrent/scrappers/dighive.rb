@@ -6,10 +6,9 @@ module Torrent
   
       attr_accessor :filename
 
-      def initialize(config)
+      def initialize()
         @episodes = []
         @agent = WWW::Mechanize.new
-        @config = config
         login
       end
 
@@ -20,8 +19,8 @@ module Torrent
         page = @agent.get('http://www.digitalhive.org/login.php')
 
         form = page.forms[0]
-        form.username = @config[:login][:digitalhive][:username]
-        form.password = @config[:login][:digitalhive][:password]
+        form.username = Config[:torrents_username]
+        form.password = Config[:torrents_password]
 
         @agent.submit(form)
 
@@ -41,8 +40,7 @@ module Torrent
         !@link.nil?
       end
 
-      def save_torrent
-        path = @config[:torrent_save_path]
+      def save_torrent(path)
     
         torrent = @link.click
         torrent.save("#{path}#{torrent.filename}")

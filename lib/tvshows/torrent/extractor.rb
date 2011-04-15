@@ -2,10 +2,6 @@ module Torrent
 
   class Extractor
 
-    def initialize(config)
-      @config = config
-    end
-
     def extract(file_name)
       fname = File.basename(file_name)
       Logger.log "Extracting file #{fname}", "EXTRACTOR"
@@ -22,7 +18,7 @@ module Torrent
     
       show_name = File.basename(File.dirname(file_name))
       if folder = Show.get_folder_by_filename(show_name)
-        return File.expand_path(folder, @config[:base_path])
+        return File.expand_path(folder, Config[:base_path])
       else
         Logger.log "Folder for #{show_name} not found", "EXTRACTOR", true
         return false

@@ -2,10 +2,10 @@ module Torrent
 
   class Downloader
 
-    def initialize(_config)
+    def initialize()
       @counter = 0
 
-      @scrapper = Scrapper::DigitalHive.new(_config)
+      @scrapper = Scrapper::DigitalHive.new()
     end
 
     def run
@@ -19,7 +19,7 @@ module Torrent
 
         if @scrapper.find_episode?(ep)
 
-          @scrapper.save_torrent(PATH)
+          @scrapper.save_torrent(Config[:torrent_save_path])
           Logger.log "Saving #{@scrapper.filename}", 'DOWNLOAD TORRENT'
         
           ep.torrent_done!

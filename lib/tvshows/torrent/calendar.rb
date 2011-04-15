@@ -2,8 +2,7 @@ module Torrent
 
   class Calendar
 
-    def initialize(config)
-      @config = config
+    def initialize()
       @agent = WWW::Mechanize.new
       login
     end
@@ -15,8 +14,8 @@ module Torrent
       page = @agent.get('http://www.pogdesign.co.uk/cat/')
 
       f = page.form_with(:action => '/cat/') do |form|
-        form.username = @config[:login][:calendar][:username]
-        form.password = @config[:login][:calendar][:password]
+        form.username = Config[:calendar_username]
+        form.password = Config[:calendar_password]
       end
       button = f.button(:value=>"Account Login")
 

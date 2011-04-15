@@ -3,7 +3,7 @@ require 'mechanize'
 require 'data_mapper'
 require 'dm-migrations'
 
-%w(logger calendar downloader subtitles extractor scrappers/dighive scheduler models/episode models/show).each do |file|
+%w(logger calendar downloader subtitles extractor scrappers/dighive scheduler models/episode models/show models/config).each do |file|
   require File.expand_path("../tvshows/#{file}", __FILE__)
 end
 
@@ -21,6 +21,9 @@ class TvShowsDaemon < Sinatra::Base
     Show.auto_migrate! unless Show.storage_exists?
     
     DataMapper.auto_upgrade!
+
+    Config.set_system_settings!
+
   end
 
   configure do
