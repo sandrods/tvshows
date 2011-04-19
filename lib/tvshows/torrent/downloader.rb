@@ -19,7 +19,7 @@ module Torrent
 
         if @scrapper.find_episode?(ep)
 
-          @scrapper.save_torrent(Config[:torrent_save_path])
+          @scrapper.save_torrent(Settings[:torrent_save_path])
           Logger.log "Saving #{@scrapper.filename}", 'DOWNLOAD TORRENT'
         
           ep.torrent_done!

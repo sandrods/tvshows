@@ -13,7 +13,7 @@ class Scheduler
 
       EventMachine.run do
 
-        Watcher.new("#{Config[:base_path]}/**/*.rar")
+        Watcher.new("#{Settings[:base_path]}/**/*.rar")
 
         scheduler = Rufus::Scheduler.start_new
 

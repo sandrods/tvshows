@@ -22,8 +22,8 @@ module Subtitle
       page = @agent.get(URL)
 
       f = page.form_with(:action => 'login_verificar.php') do |form|
-        form.txtLogin = Config[:subtitles_username]
-        form.txtSenha = Config[:subtitles_password]
+        form.txtLogin = Settings[:subtitles_username]
+        form.txtSenha = Settings[:subtitles_password]
         form['chkLogin'] = "1"
       end
       button = f.button(:value=>"Entrar")
@@ -75,7 +75,7 @@ module Subtitle
       files = Dir["*.srt"]
 
       if st = files.detect { |f| f =~ ep.subtitle_file_regex }
-        FileUtils.cp st, File.expand_path(ep.show_name, Config[:base_path])
+        FileUtils.cp st, File.expand_path(ep.show_name, Settings[:base_path])
         Logger.log "#{st} extracted", "SUBTITLE FOUND", true
       else
         Logger.log "#{file_name} downloaded, but no subtitle matched: #{files.join("\n")}", "SUBTITLES", true

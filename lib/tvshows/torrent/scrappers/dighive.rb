@@ -19,8 +19,8 @@ module Torrent
         page = @agent.get('http://www.digitalhive.org/login.php')
 
         form = page.forms[0]
-        form.username = Config[:torrents_username]
-        form.password = Config[:torrents_password]
+        form.username = Settings[:torrents_username]
+        form.password = Settings[:torrents_password]
 
         @agent.submit(form)
 

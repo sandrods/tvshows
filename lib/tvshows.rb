@@ -22,7 +22,7 @@ class TvShowsDaemon < Sinatra::Base
     
     DataMapper.auto_upgrade!
 
-    Config.set_system_settings!
+    Settings.set_system_settings!
 
   end
 

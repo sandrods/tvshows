@@ -1,4 +1,4 @@
-class Config
+class Settings
   include DataMapper::Resource
 
   property :id,         Serial
@@ -7,7 +7,7 @@ class Config
   property :value,     String
 
   def self.[](name)
-    Config.first(:name => name.to_s)
+    Settings.first(:name => name.to_s)
   end
 
   def self.set_system_settings!
@@ -24,7 +24,13 @@ class Config
       calendar_username
       calendar_password
     ).each do |s|
-      Config.first_or_create(:name => s)
+      Settings.first_or_create(:name => s)
+    end
+  end
+  
+  def self.update_all(names, values)
+    names.each_with_index do |name, i|
+      Settings[name].update(:value => values[i])
     end
   end
 
