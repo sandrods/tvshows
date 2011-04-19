@@ -1,0 +1,14 @@
+<h1>Settings</h1>
+
+<form action="/settings" method="post" >
+<table width="100%" class="main settings" cellpadding="0" cellspacing="0">
+<% Settings.all.each do |setting| %>
+<tr>
+	<td class="label"><%= setting.name %><input type="hidden" name="name[]" value="<%= setting.name %>"/></td>
+	<td><input type="text" name="value[]" value="<%= setting.value %>"/></td>
+</tr>
+<% end %>
+</table>
+<br/>
+<input type="submit" value="Save Settings"/>
+</form>
