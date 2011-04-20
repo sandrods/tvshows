@@ -74,4 +74,12 @@ class TvShowsDaemon < Sinatra::Base
    redirect "/settings"
   end
 
+  get "/shows" do
+    erb :shows
+  end
+
+  get "/shows/reset" do
+   Show.destroy
+   redirect "/shows"
+  end
 end

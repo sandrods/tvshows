@@ -7,7 +7,7 @@ class Settings
   property :value,     String
 
   def self.[](name)
-    Settings.first(:name => name.to_s)
+    Settings.first(:name => name.to_s).value
   end
 
   def self.set_system_settings!

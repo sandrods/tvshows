@@ -1,0 +1,13 @@
+<h1>Shows</h1>
+<table class="main" cellpadding="0" cellspacing="0" width="100%">
+	<tr>
+		<th>Show Name</th>
+		<th>&nbsp;</th>
+	</tr>
+	<% Show.all.each do |show| %>
+	<tr>
+		<td><%= show.name %></td>
+		<td>&nbsp;</td>
+	</tr>
+  <% end %>
+</table>

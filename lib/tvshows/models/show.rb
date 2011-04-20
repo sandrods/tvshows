@@ -14,4 +14,21 @@ class Show
     Regexp.new("^#{self.name.split.join('.')}", Regexp::IGNORECASE)
   end
 
+  def self.update_all(names)
+    names.each do |name|
+      n = the_name(name)
+      Show.first_or_create(:name => n)
+    end
+  end
+  
+  private 
+
+  def self.the_name(name)
+    if name =~ /(.*)\s?\[The\]/i
+      "The #{$1}"
+    else
+      name
+    end
+  end
+
 end
