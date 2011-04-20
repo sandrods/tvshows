@@ -21,8 +21,6 @@ module Torrent
 
       f.submit(button)
 
-      # Logger.log "Login Sucessfull...", 'Calendar'
-
     end
   
     def get_episodes!(_date = nil)
@@ -46,6 +44,18 @@ module Torrent
 
         ep.save
       end
+    end
+
+    def get_shows
+      ret = []
+      Logger.log "Geting Shows...", 'Calendar'
+      page = @agent.get("http://www.pogdesign.co.uk/cat/showselect.php")
+
+      page./("//div[@class='checkedletter  ']//a").each do |node|
+        ret << node.text
+      end
+      
+      ret
     end
   
   end

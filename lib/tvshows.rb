@@ -82,4 +82,11 @@ class TvShowsDaemon < Sinatra::Base
    Show.destroy
    redirect "/shows"
   end
+
+  get "/shows/from_calendar" do
+    shows = Torrent::Calendar.new.get_shows
+    Show.update_all(shows)
+    redirect "/shows"
+  end
+
 end
