@@ -14,7 +14,7 @@ module Torrent
 
       @scrapper.update_links!
 
-      Episode.torrent_to_do.each do |ep|
+      Episode.torrent_missing.each do |ep|
         Logger.log "(#{@counter}) Verifying -> #{ep.to_s}", 'SCRAPPER'
 
         if @scrapper.find_episode?(ep)

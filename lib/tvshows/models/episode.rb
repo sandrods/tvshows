@@ -12,30 +12,34 @@ class Episode
 
   belongs_to :show
 
-  def self.torrent_to_do
+  def self.torrent_missing
     all(:torrent_done => false)
   end
 
-  def self.subtitle_to_do
+  def self.subtitle_missing
     all(:subtitle_done => false)
   end
 
 
-  def self.has_torrent_to_do?
-    !Episode.torrent_to_do.empty?
+  def self.any_torrent_missing?
+    !Episode.torrent_missing.empty?
   end
 
-  def self.all_torrent_done?
-    Episode.torrent_to_do.empty?
+  def self.no_torrent_missing?
+    Episode.torrent_missing.empty?
   end
 
 
-  def self.has_subtitle_to_do?
-    !Episode.subtitle_to_do.empty?
+  def self.any_subtitle_missing?
+    !Episode.subtitle_missing.empty?
   end
 
-  def self.all_subtitle_done?
-    Episode.subtitle_to_do.empty?
+  def self.no_subtitle_missing?
+    Episode.subtitle_missing.empty?
+  end
+  
+  def self.to_do
+    Episode.torrent_missing + Episode.subtitle_missing
   end
 
 

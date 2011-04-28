@@ -23,13 +23,13 @@ class Scheduler
 
           Torrent::Calendar.new.get_episodes!
 
-          if Episode.has_torrent_to_do?
+          if Episode.any_torrent_missing?
 
             downloader = Torrent::Downloader.new
 
             scheduler.every("10m", :first_in => "0m") do |job|
               downloader.run
-              if Episode.all_torrent_done?
+              if Episode.no_torrent_missing?
                 job.unschedule
                 Logger.log "Exiting...", "SCRAPPER"
               end
@@ -40,7 +40,7 @@ class Scheduler
         end
 
         scheduler.every "1h", :first_in => "0m" do
-          Subtitle::Downloader.new if Episode.has_subtitle_to_do?
+          Subtitle::Downloader.new if Episode.any_subtitle_missing?
         end
 
       end # EventMachine

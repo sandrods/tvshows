@@ -49,7 +49,7 @@ module Subtitle
     def download
       links = get_links
     
-      Episode.subtitle_to_do.each do |ep|
+      Episode.subtitle_missing.each do |ep|
         if names = links.keys.select{|l| l.match(ep.subtitle_link_regex)}
           names.each do |name|
             id = links[name]
