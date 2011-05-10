@@ -56,7 +56,13 @@ class TvShowsDaemon < Sinatra::Base
 
  
   get "/episodes" do
+   @episodes = Episode.all
    erb :episodes
+  end
+
+  get "/episodes/get" do
+   Torrent::Calendar.new.get_episodes!
+   redirect "/episodes"
   end
 
   get "/settings" do

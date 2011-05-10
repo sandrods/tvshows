@@ -7,7 +7,7 @@ class Show
   has n, :episodes
   
   def self.get_folder_by_filename(file_name)
-    Show.all.detect { |s| file_name.match(s.folder_regex) }
+    Show.all.detect { |s| file_name.match(s.folder_regex) }.name.split.join(".")
   end
 
   def folder_regex

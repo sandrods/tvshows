@@ -7,17 +7,17 @@ class Episode
   property :season,     String,  :length  => (1..2)
   property :number,     String,  :length  => (1..6)
 
-  property :torrent_done,   Boolean, :default => false
-  property :subtitle_done,  Boolean, :default => false
+  property :torrent_done,   DateTime
+  property :subtitle_done,  DateTime
 
   belongs_to :show
 
   def self.torrent_missing
-    all(:torrent_done => false)
+    all(:torrent_done => nil)
   end
 
   def self.subtitle_missing
-    all(:subtitle_done => false)
+    all(:subtitle_done => nil)
   end
 
 
@@ -82,13 +82,18 @@ class Episode
   end
 
   def torrent_done!
-    self.torrent_done = true
+    self.torrent_done = Time.now
     self.save
   end
 
   def subtitle_done!
-    self.subtitle_done = true
+    self.subtitle_done = Time.now
     self.save
   end
+  
+  def save_unless_exists
+    save unless Episode.first(:season => self.season, :number => self.number, :show_id => self.show_id)
+  end
+  
 
 end

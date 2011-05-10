@@ -30,7 +30,7 @@ module Torrent
       url_month = date.month.to_s + "-" + date.year.to_s
       td_id = "d_#{date.day}_#{date.month}_#{date.year}"
 
-      #Logger.log "Running...", 'Calendar'
+      #Logger.log "Fetching #{td_id}...", 'Calendar'
 
       page = @agent.get("http://www.pogdesign.co.uk/cat/#{url_month}")
     
@@ -42,7 +42,7 @@ module Torrent
         ep.set_ep(td./("span.seasep")[1].text)
         ep.title = td./("span.seasep")[0].text
 
-        ep.save
+        ep.save_unless_exists
       end
     end
 

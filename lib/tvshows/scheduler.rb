@@ -13,7 +13,7 @@ class Scheduler
 
       EventMachine.run do
 
-        Watcher.new("#{Settings[:base_path]}/**/*.rar")
+        #Watcher.new("#{Settings[:base_path]}/**/*.rar")
 
         scheduler = Rufus::Scheduler.start_new
 
@@ -57,7 +57,7 @@ class Watcher < EventMachine::FileGlobWatch
   end
 
   def file_found(file)
-    Extractor.new.extract(file)
+    Torrent::Extractor.new.extract(file)
   end
 
   def file_deleted(file)

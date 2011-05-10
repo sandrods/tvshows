@@ -8,28 +8,14 @@
 		<th>&nbsp;</th>
 	</tr>
 	
+	<% @episodes.each do |episode| %>
 	<tr>
-		<td>Criminal.Minds</td>
-		<td>S05E12</td>
-		<td>14/04/2011 23:37</td>
-		<td>&nbsp;</td>
+		<td><%= episode.show_name %></td>
+		<td><%= episode.number_txt %></td>
+		<td><%= episode.torrent_done.strftime("%d/%m/%Y - %H:%M") rescue "-" %></td>
+		<td><%= episode.subtitle_done.strftime("%d/%m/%Y - %H:%M") rescue "-"%></td>
 		<td>&nbsp;</td>
 	</tr>
-
-	<tr>
-		<td>Fringe</td>
-		<td>S03E12</td>
-		<td>15/04/2011 22:37</td>
-		<td>&nbsp;</td>
-		<td>&nbsp;</td>
-	</tr>
-
-	<tr>
-		<td>Greys.Anatomy</td>
-		<td>S07E12</td>
-		<td>&nbsp;</td>
-		<td>&nbsp;</td>
-		<td>&nbsp;</td>
-	</tr>
+	<% end %>
 
 </table>
