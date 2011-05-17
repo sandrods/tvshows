@@ -12,41 +12,42 @@ class Episode
 
   belongs_to :show
 
-  def self.torrent_missing
-    all(:torrent_done => nil)
+  def self.missing(what = :any)
+    case what
+      when :torrent
+        all(:torrent_done => nil)
+      when :subtitle
+        all(:subtitle_done => nil)
+      when :any
+        all(:subtitle_done => nil) + all(:torrent_done => nil)
+      else
+        []
+    end
   end
 
-  def self.subtitle_missing
-    all(:subtitle_done => nil)
+  def self.missing?(what = :any)
+    !missing(what).empty?
   end
 
-
-  def self.any_torrent_missing?
-    !Episode.torrent_missing.empty?
+  def done!(what = :all)
+    case what
+      when :torrent
+        self.torrent_done  = Time.now
+      when :subtitle
+        self.subtitle_done = Time.now
+      when :all
+        self.subtitle_done = Time.now
+        self.torrent_done  = Time.now
+      else
+        []
+    end
+    self.save
   end
-
-  def self.no_torrent_missing?
-    Episode.torrent_missing.empty?
-  end
-
-
-  def self.any_subtitle_missing?
-    !Episode.subtitle_missing.empty?
-  end
-
-  def self.no_subtitle_missing?
-    Episode.subtitle_missing.empty?
-  end
-  
-  def self.to_do
-    Episode.torrent_missing + Episode.subtitle_missing
-  end
-
 
   def set_ep(txt)
     txt =~ /S: (\d+) - Ep: (\d+) \((.+)\) - (.*)/
-    self.season = $1
-    self.number = $2
+    self.season = $1.to_i
+    self.number = $2.to_i
   end
 
   def set_show(show_name)
@@ -55,15 +56,15 @@ class Episode
   end
 
   def torrent_regex
-    Regexp.new("(?!.*(720|264))(=#{self.show_name}.*#{self.number_txt}.*HDTV)", Regexp::IGNORECASE)
+    @torrent_regex ||= Regexp.new("(?!.*(720|264))(=#{self.show_name}.*#{self.number_txt}.*HDTV)", Regexp::IGNORECASE)
   end
 
   def subtitle_link_regex
-    Regexp.new("^#{self.show_name}.*#{self.number_txt}", Regexp::IGNORECASE)
+    @subtitle_link_regex ||= Regexp.new("^#{self.show_name}.*#{self.number_txt}", Regexp::IGNORECASE)
   end
 
   def subtitle_file_regex
-    Regexp.new("(?!.*(720|264))#{self.show_name}.*\.srt", Regexp::IGNORECASE)
+    @subtitle_file_regex ||= Regexp.new("(?!.*(720|264))#{self.show_name}.*\.srt", Regexp::IGNORECASE)
   end
 
   def number_txt
@@ -71,6 +72,11 @@ class Episode
     _season = self.season.to_s.rjust(2, '0')
 
     "S#{_season}E#{_ep}"
+  end
+  
+  def folder_name
+    _season = self.season.to_s.rjust(2, '0')
+    "#{self.show.name}.S#{_season}"
   end
 
   def show_name
@@ -80,20 +86,39 @@ class Episode
   def to_s
     "#{self.show.name}: #{self.number_txt} - #{self.title}"
   end
-
-  def torrent_done!
-    self.torrent_done = Time.now
-    self.save
-  end
-
-  def subtitle_done!
-    self.subtitle_done = Time.now
-    self.save
-  end
   
   def save_unless_exists
     save unless Episode.first(:season => self.season, :number => self.number, :show_id => self.show_id)
   end
+
+  def self.get_folder_by_filename(file_name)
+    file_name = File.basename(File.dirname(file_name))
+    show = Show.get_by_filename(file_name)
+    if ep = parse_filename(file_name)
+      _season = ep[:season].to_s.rjust(2, '0')
+      return "#{show.name}.S#{_season}"
+    else
+      return show.name
+    end
+  end
+
+  def self.find_by_filename(filename, show)
+    show = Show.get_by_filename(filename) unless show
+    if ep = parse_filename(filename)
+      show.episodes.first(:season => ep[:season], :number => ep[:number])
+    else
+      nil
+    end
+  end
+
+  private
   
+  def self.parse_filename(filename)
+    if filename =~ /^([\w\.]+)\.(S(\d\d)E(\d\d)|(\d)(\d\d))/i
+      {:show => $1, :season => ($3 || $5), :number => $4 || $6}
+    else
+      nil
+    end
+  end
 
 end

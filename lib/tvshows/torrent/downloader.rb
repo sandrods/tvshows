@@ -8,13 +8,13 @@ module Torrent
       @scrapper = Scrapper::DigitalHive.new()
     end
 
-    def run
+    def run!
       #Logger.log "Running", 'Digital Hive'
       @counter +=1
 
       @scrapper.update_links!
 
-      Episode.torrent_missing.each do |ep|
+      Episode.missing(:torrent).each do |ep|
         Logger.log "(#{@counter}) Verifying -> #{ep.to_s}", 'SCRAPPER'
 
         if @scrapper.find_episode?(ep)
@@ -22,7 +22,7 @@ module Torrent
           @scrapper.save_torrent(Settings[:torrent_save_path])
           Logger.log "Saving #{@scrapper.filename}", 'DOWNLOAD TORRENT'
         
-          ep.torrent_done!
+          ep.done!(:torrent)
         end
 
       end

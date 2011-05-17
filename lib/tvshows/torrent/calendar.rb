@@ -3,7 +3,7 @@ module Torrent
   class Calendar
 
     def initialize()
-      @agent = WWW::Mechanize.new
+      @agent = Mechanize.new
       login
     end
 
@@ -26,7 +26,7 @@ module Torrent
     def get_episodes!(_date = nil)
 
       eps = []
-      date = _date ? Date.parse(_date) : Date.today
+      date = _date ? Date.parse(_date) : Date.today - 2
       url_month = date.month.to_s + "-" + date.year.to_s
       td_id = "d_#{date.day}_#{date.month}_#{date.year}"
 
@@ -54,7 +54,12 @@ module Torrent
       page./("//div[@class='checkedletter  ']//a").each do |node|
         ret << node.text
       end
-      
+
+      page./("//div[@class='checkedletter  prem']//a").each do |node|
+        ret << node.text
+      end
+
+      Logger.log ret, 'Calendar'
       ret
     end
   

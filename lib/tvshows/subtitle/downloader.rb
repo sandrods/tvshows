@@ -5,10 +5,18 @@ module Subtitle
     #URL = "http://194.14.79.53"
     URL = "http://legendas.tv"
 
-    def initialize()
-      @agent = WWW::Mechanize.new
-      login
-      download
+    def initialize(episodes)
+      @episodes = episodes
+      @agent = Mechanize.new
+    end
+  
+    def run!
+
+      unless @episodes.empty?
+        login
+        get_links
+        download
+      end
 
     rescue Exception => e
       Logger.log e.message, "SUBTITLES ERR"
@@ -33,66 +41,38 @@ module Subtitle
     end
 
     def get_links
-      ret = {}
+      @links = {}
       page = @agent.get("#{URL}/destaques.php?show=2")
       page./("div.Ldestaque").each do |div|
         nome = $1 if div['onmouseover']=~/gpop\('(?:.*','){2}(.*)','(.*','){5}/
         id = $1 if div['onclick']=~/javascript:abredown\('(.*)'\);/
-        ret[nome] = id
+        @links[nome] = id
       end
 
       # page = @agent.get("#{URL}/destaques.php?show=2&start=24")
 
-      ret
+      @links
     end
 
     def download
-      links = get_links
-    
-      Episode.subtitle_missing.each do |ep|
-        if names = links.keys.select{|l| l.match(ep.subtitle_link_regex)}
+
+      @episodes.each do |ep|
+        if names = @links.keys.select{|l| l.match(ep.subtitle_link_regex)}
           names.each do |name|
             id = links[name]
             url = "#{URL}/info.php?d=#{id}&c=1"
             file = @agent.get(url)
             file.save
-            ep.subtitle_done!
-            extract_file(file.filename, ep)
+            ep.done!(:subtitle)
+            
+            Extractor.new(file.filename, ep).extract!
+
           end
         end
       end
 
     end
 
-    def extract_file(file_name, ep)
-      folder = "#{Time.now.to_f}.tmp"
-      FileUtils.mkdir_p(folder)
-      FileUtils.mv(file_name, folder)
-      Dir.chdir(folder)
+  end # class
 
-      unzip_file(file_name)
-    
-      files = Dir["*.srt"]
-
-      if st = files.detect { |f| f =~ ep.subtitle_file_regex }
-        FileUtils.cp st, File.expand_path(ep.show_name, Settings[:base_path])
-        Logger.log "#{st} extracted", "SUBTITLE FOUND", true
-      else
-        Logger.log "#{file_name} downloaded, but no subtitle matched: #{files.join("\n")}", "SUBTITLES", true
-      end
-      Dir.chdir("..")
-      FileUtils.rm_rf(folder)
-    end
-
-    def unzip_file(file_name)
-      ext = File.extname(file_name).downcase
-      case ext
-      when ".rar"
-        %x(unrar e #{file_name})
-      when ".zip"
-        %x(unzip #{file_name})
-      end
-    end
-  end
-
-end
+end # module

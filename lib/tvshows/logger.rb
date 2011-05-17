@@ -1,8 +1,7 @@
 class Logger
 
-  def self.log(msg, title=nil, sticky=false, show_time=true)
-    time = show_time ? "\n#{Time.now.strftime('%a %d %b %H:%M:%S')}" : ''
-    #Growl.notify "#{msg}#{time}", :title=>title, :sticky=>sticky
+  def self.log(msg, title=nil)
+    time = "\n#{Time.now.strftime('%a %d %b %H:%M:%S')}"
     title = "" unless title
     dots = "."*(25 - title.size)
     print "#{time} - [#{title}#{dots}] #{msg}"

@@ -17,19 +17,25 @@ class Scheduler
 
         scheduler = Rufus::Scheduler.start_new
 
-        scheduler.cron "56 23 * * *" do
+        scheduler.cron "00 20 * * *" do
 
-          Logger.log "scheduler.cron", "DEBUG"
+          Logger.log "scheduler.cron.get_episodes", "DEBUG"
 
           Torrent::Calendar.new.get_episodes!
 
-          if Episode.any_torrent_missing?
+        end
+
+        scheduler.cron "00 23 * * *" do
+
+          if Episode.missing?(:torrent)
 
             downloader = Torrent::Downloader.new
 
             scheduler.every("10m", :first_in => "0m") do |job|
-              downloader.run
-              if Episode.no_torrent_missing?
+              
+              downloader.run!
+              
+              unless Episode.missing?(:torrent)
                 job.unschedule
                 Logger.log "Exiting...", "SCRAPPER"
               end
@@ -40,7 +46,7 @@ class Scheduler
         end
 
         scheduler.every "1h", :first_in => "0m" do
-          Subtitle::Downloader.new if Episode.any_subtitle_missing?
+          Subtitle::Downloader.new(Episode.missing(:subtitle)).run!
         end
 
       end # EventMachine

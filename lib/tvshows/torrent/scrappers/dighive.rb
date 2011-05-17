@@ -8,7 +8,7 @@ module Torrent
 
       def initialize()
         @episodes = []
-        @agent = WWW::Mechanize.new
+        @agent = Mechanize.new
         login
       end
 

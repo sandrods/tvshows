@@ -5,9 +5,9 @@ class Show
   property :name, String, :required => true, :length => (1..254)
   
   has n, :episodes
-  
-  def self.get_folder_by_filename(file_name)
-    Show.all.detect { |s| file_name.match(s.folder_regex) }.name.split.join(".")
+
+  def self.get_by_filename(file_name)
+    Show.all.detect { |s| file_name.match(s.folder_regex) }
   end
 
   def folder_regex

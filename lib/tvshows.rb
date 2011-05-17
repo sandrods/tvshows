@@ -29,7 +29,7 @@ class TvShowsDaemon < Sinatra::Base
 
   configure do
 
-    db_file = File.expand_path("../../tvshows.sqlite3", __FILE__)
+    db_file = File.expand_path("../../db/tvshows.sqlite3", __FILE__)
     db = "sqlite3:///#{db_file}"
     DataMapper.setup(:default, db)
 
@@ -56,7 +56,7 @@ class TvShowsDaemon < Sinatra::Base
 
  
   get "/episodes" do
-   @episodes = Episode.all
+   @episodes = Episode.missing(:any)
    erb :episodes
   end
 
@@ -81,6 +81,7 @@ class TvShowsDaemon < Sinatra::Base
   end
 
   get "/shows" do
+    @shows = Show.all(:order => :name.asc)
     erb :shows
   end
 

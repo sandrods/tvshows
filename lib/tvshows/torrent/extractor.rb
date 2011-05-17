@@ -15,9 +15,8 @@ module Torrent
     private
   
     def get_show_folder(file_name)
-    
-      show_name = File.basename(File.dirname(file_name))
-      if folder = Show.get_folder_by_filename(show_name)
+
+      if folder = Episode.get_folder_by_filename(file_name)
         return File.expand_path(folder, Settings[:base_path])
       else
         Logger.log "Folder for #{show_name} not found", "EXTRACTOR", true
