@@ -59,7 +59,6 @@ module Torrent
         ret << node.text
       end
 
-      Logger.log ret, 'Calendar'
       ret
     end
   
