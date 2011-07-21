@@ -3,7 +3,7 @@ class Series
 
   def initialize(config)
     @config = config
-    @agent = WWW::Mechanize.new
+    @agent = Mechanize.new
     login
   end
 

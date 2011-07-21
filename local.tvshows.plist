@@ -6,15 +6,16 @@
 	<string>local.tvshows</string>
 	<key>ProgramArguments</key>
 	<array>
-		<string>/usr/bin/ruby</string>
+		<string>/Users/sandro/.rvm/bin/rvm</string>
+		<string>ruby</string>
 		<string>/Users/sandro/dev/workspace/tvshows/lib/tvshows.rb</string>
 	</array>
 	<key>WorkingDirectory</key>
 	<string>/Users/sandro/dev/workspace/tvshows/lib</string>
 	<key>StandardOutPath</key>
-	<string>/var/log/tvshows.log</string>
+	<string>/Users/sandro/Library/Logs/tvshows.log</string>
 	<key>StandardErrorPath</key>
-	<string>/var/log/tvshows.err.log</string>
+	<string>/Users/sandro/Library/Logs/tvshows.err.log</string>
 	<key>RunAtLoad</key>
 	<true/>
 </dict>

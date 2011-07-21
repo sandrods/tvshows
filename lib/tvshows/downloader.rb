@@ -4,7 +4,7 @@ class Downloader
 
   def initialize(_config, _files)
     @config = _config
-    @agent = WWW::Mechanize.new
+    @agent = Mechanize.new
     
     @files = _files
     @counter = 0
@@ -52,6 +52,7 @@ class Downloader
         
         ep.done = true
       end
+      
     end
 
   rescue Exception => e
@@ -61,5 +62,9 @@ class Downloader
   def done?
     !@files.detect{ |ep| ep.done == false}
   end
-  
+
+  def expired?
+    @counter > 90
+  end
+
 end

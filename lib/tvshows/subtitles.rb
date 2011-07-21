@@ -2,10 +2,11 @@ class Subtitles
 
   #URL = "http://194.14.79.53"
   URL = "http://legendas.tv"
-
+  DOWNLOAD_FILE = File.expand_path(File.join(File.dirname(__FILE__), '..', 'downloaded.log'))
+  
   def initialize(config)
     @config = config
-    @agent = WWW::Mechanize.new
+    @agent = Mechanize.new
     login
     download
 
@@ -94,7 +95,7 @@ class Subtitles
 
   def log_download!(name)
     time = Time.now.strftime("%d/%m/%Y %H:%M:%S")
-    File.open("downloaded.log", 'a') do |f|
+    File.open(DOWNLOAD_FILE, 'a') do |f|
       f.write("#{time} - #{name}\n")
     end
   end
@@ -103,7 +104,7 @@ class Subtitles
     #return true unless File.exist?("downloaded.log")
     lines = []
 
-    File.open("downloaded.log", 'r') { |f| lines = f.readlines }
+    File.open(DOWNLOAD_FILE, 'r') { |f| lines = f.readlines }
 
     lines.detect {|line| line.include?(name) }.nil?
   end
@@ -124,12 +125,17 @@ class Subtitles
       s, ss, e = $1.to_i, $1, $2
       rex = Regexp.new("#{s}#{e}|S#{ss}E#{e}", Regexp::IGNORECASE)
       files = Dir["#{dir}/*.avi"]
+
       if avi = files.detect { |f| f =~ rex }
         new_name = File.join(dir, st.gsub(".srt", ".avi"))
+
         if new_name != avi
-          FileUtils.mv(avi, new_name)
+          tmp_name = File.join(dir, st.gsub(".srt", ".tmp"))
+          FileUtils.mv(avi, tmp_name) # avoid same file error when files have different case
+          FileUtils.mv(tmp_name, new_name)
           Logger.log "#{File.basename(avi)} renamed to #{File.basename(new_name)}", "SUBTITLE FOUND", true
         end
+
       end
 
     end

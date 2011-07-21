@@ -1,19 +1,22 @@
+BASE = File.expand_path(File.dirname(__FILE__))
+
 require 'rubygems'
 require 'mechanize'
 require 'rufus/scheduler'
-require 'growl'
 require 'eventmachine'
 require 'eventmachine-tail'
-#require 'em-dir-watcher'
+require 'yaml'
 
-require 'tvshows/logger'
-require 'tvshows/episode'
-require 'tvshows/series'
-require 'tvshows/downloader'
-require 'tvshows/subtitles'
-require 'tvshows/extractor'
+require File.join(BASE, 'tvshows', 'logger')
+require File.join(BASE, 'tvshows', 'episode')
+require File.join(BASE, 'tvshows', 'series')
+require File.join(BASE, 'tvshows', 'extractor')
+require File.join(BASE, 'tvshows', 'downloader')
+require File.join(BASE, 'tvshows', 'subtitles')
 
-config = YAML.load_file("../config.yml")
+Logger.log "Loading..." , "TV SHOWS"
+
+config = YAML.load_file(File.expand_path(File.join(BASE, '..', 'config.yml')))
 
 class Watcher < EventMachine::FileGlobWatch
   def initialize(pathglob, config, interval=60)
@@ -23,7 +26,7 @@ class Watcher < EventMachine::FileGlobWatch
 
   def file_found(file)
     #Logger.log(file)
-    Extractor.new(@conf).extract(file)
+    ::Extractor.new(@conf).extract(file)
   end
 
   def file_deleted(file)
@@ -32,7 +35,9 @@ class Watcher < EventMachine::FileGlobWatch
 end # class Watcher
 
 EventMachine.run do
-
+  
+  Logger.log "Starting..." , "TV SHOWS"
+  
   # Logger.log "Watching files on #{config[:base_path]}", "TV SHOWS"
   # EMDirWatcher.watch config[:base_path], :include_only => '*.rar' do |paths|
   #   paths.each do |path|
@@ -45,9 +50,9 @@ EventMachine.run do
 
   scheduler = Rufus::Scheduler.start_new
   
-  scheduler.cron "31 22 * * *" do
+  scheduler.cron "18 23 * * *" do
 
-    config = YAML.load_file("../config.yml")
+    config = YAML.load_file(File.expand_path(File.join(BASE, '..', 'config.yml')))
 
     eps = Series.new(config).episodes
       
@@ -56,10 +61,13 @@ EventMachine.run do
       
       scheduler.every("10m", :first_in => "30m") do |job|
         download.run
-        if download.done?
+
+        if download.done? || download.expired?
           job.unschedule
-          Logger.log "Exiting...", "DIGITAL HIVE"
+          Logger.log "Exiting..."           , "DIGITAL HIVE" if download.done? 
+          Logger.log "Quiting (TIMEOUT)..." , "DIGITAL HIVE" if download.expired? 
         end
+
       end
       
     end
@@ -67,7 +75,7 @@ EventMachine.run do
   end
   
   scheduler.every "1h", :first_in => "0m" do
-    config = YAML.load_file("../config.yml")
+    config = YAML.load_file(File.expand_path(File.join(BASE, '..', 'config.yml')))
     Subtitles.new(config)
   end
 
